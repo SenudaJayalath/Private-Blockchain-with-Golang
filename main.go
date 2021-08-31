@@ -1,38 +1,25 @@
 package main
 
 import (
-	"bytes"
-	"crypto/sha256"
+	b "blockchain-with-golang/blockchain"
+	"fmt"
+	"strconv"
 )
 
-type Block struct {
-	Hash     []byte
-	Data     []byte
-	PrevHash []byte
-}
-
-type BlockChain struct {
-	block []*Block
-}
-
-func (b *Block) DeriveHash() {
-	info := bytes.Join([][]byte{b.Data, b.PrevHash}, []byte{})
-	hash := sha256.Sum256(info)
-	b.Hash = hash[:]
-}
-
-func CreateBlock(data string, prevHash []byte) *Block {
-	block := &Block{[]byte{}, []byte(data), prevHash}
-	block.DeriveHash()
-	return block
-}
-
 func main() {
-	CreateBlock("ffe", []byte{'1', '3', '5'})
-	// var test Block
-	// test.Data = []byte{'d', 'f', 'h'}
-	// test.PrevHash = []byte{'1', '3', '5'}
+	chain := b.InitBlockChain()
+	chain.AddBlock("First Block after Genesis")
+	chain.AddBlock("Second Block after Genesis")
+	chain.AddBlock("Third Block after Genesis")
 
-	// test.DeriveHash()
+	for _, block := range chain.Blocks {
+		fmt.Printf("Previous Hash : %x\n", block.PrevHash)
 
+		fmt.Printf("Data in Block: %s\n", block.Data)
+		fmt.Printf("Hash: %x\n", block.Hash)
+
+		pow := b.NewProof(block)
+		fmt.Printf("Pow: %s\n", strconv.FormatBool(pow.Validate()))
+		fmt.Println()
+	}
 }

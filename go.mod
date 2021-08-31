@@ -1,3 +1,3 @@
-module github.com/SenudaJayalath/private-blochain-with-Golang
+module blockchain-with-golang
 
 go 1.17
